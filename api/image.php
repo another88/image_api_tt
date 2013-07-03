@@ -40,12 +40,16 @@ class Image{
     public function getAllImages(){
         $db = Database::getInstance();
         $res = $db->get_where("image","",$this->_settings['max_on_page'],"order by time desc")->result();
-        
         return $res;
     }
 
     public function deleteImage($id){
         $db = Database::getInstance();
+        $name = $db->get_where("image"," WHERE id = {$id} ",1,"order by time desc")->result();
+        if(isset($name[0]['name'])){
+            $name = $name[0]['name'];
+            unlink("{$this->_settings['upload_path']}/{$name}");
+        }
         return $db->delete("image",$id);
     }
 
